@@ -1,0 +1,24 @@
+---
+title: "puert-2-rico"
+author: "Jessica French"
+date: "2022-08-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+bq1 <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "QuebradaCuenca1-Bisley.csv"))
+bq2 <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "QuebradaCuenca2-Bisley.csv"))
+bq3 <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "QuebradaCuenca3-Bisley.csv"))
+prm <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "RioMameyesPuenteRoto.csv"))
+```
+
+
