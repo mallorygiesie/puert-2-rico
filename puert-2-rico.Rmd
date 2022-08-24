@@ -21,3 +21,7 @@ bq3 <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "Q
 prm <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "RioMameyesPuenteRoto.csv"))
 ```
 
+```{r}
+
+```
+
