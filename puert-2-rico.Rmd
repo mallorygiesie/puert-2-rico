@@ -30,14 +30,14 @@ prm <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "R
 columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns to be kept. 
 
 
-#select columns form columns vector, create columns for month and year adn filter to rows that contain years 1988 to 1994. 
+#select columns form columns vector, create columns for month and year and filter to rows that contain years 1988 to 1994. 
 bq1_tidy <- bq1 |> 
-  select(columns_vector) |> 
-  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
-  filter(Year %in% c(seq(from = 1988, to = 1994)))
+  select(columns_vector) |> #---- subset to include only the columns (variables) we want
+  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |>   #---- add a new column with year - month combination
+  filter(Year %in% c(seq(from = 1988, to = 1994))). #---- subset only for rows in the time frame of interest
 
-bq2_tidy <- bq2 |> 
-  select(columns_vector) |> 
+bq2_tidy <- bq2 |>   #---- complete the exact same steps for the following three data sets 
+  select(columns_vector) |>      
   mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
   filter(Year %in% c(seq(from = 1988, to = 1994)))
 
@@ -58,13 +58,13 @@ combined_data <- bind_rows(bq1_tidy, bq2_tidy, bq3_tidy, prm_tidy)
 
 ```{r}
 #Create one column of month and year in date format so that nitrogen concentration can be summarized by month and year.
-combined_data_mean_N <- combined_data |> 
-  mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
-  mutate(Month_Year = my(Month_Year)) |> 
-  group_by(Month_Year, Sample_ID) |> 
-  summarize(Monthly_Mean = mean(`NO3-N`, na.rm = TRUE))
+combined_data_mean_N <- combined_data |>   
+  mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> #create unique month - year column
+  mutate(Month_Year = my(Month_Year)) |>   #extract month - year from that to get back into date format
+  group_by(Month_Year, Sample_ID) |>   #group by month and location to create mean values
+  summarize(Monthly_Mean = mean(`NO3-N`, na.rm = TRUE))   # -- create table of monthly means for our plot later 
 
-#Monthly mean for postassium. 
+#Monthly mean for postassium. (same workflow as above)
 combined_data_mean_K <- combined_data |> 
   mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
   mutate(Month_Year = my(Month_Year)) |> 
