@@ -23,6 +23,7 @@ bq3 <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "Q
 prm <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "RioMameyesPuenteRoto.csv"))
 ```
 
+
 ```{r}
 # Select Columns that include sample id, sample date, nitrogen, and potassium concentration. 
 columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns to be kept. 
@@ -93,5 +94,6 @@ plot_1989_1994_K <- ggplot(data = combined_data_mean_K, aes(x = Month_Year,
 
 plot_1989_1994_K
 ```
+
 
 
