@@ -79,8 +79,7 @@ plot_1989_1994_N <- ggplot(data = combined_data_mean_N, aes(x = Month_Year,
                                                    y = Monthly_Mean)) +
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean Nitrogen Concentration") +
-  guides(color = guide_legend(title = "Sample Site"))
+       y = "Mean Nitrogen Concentration") 
 
 plot_1989_1994_N
 ```
@@ -122,10 +121,10 @@ q2_allsites_K <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(K))
 
-ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
+ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
   labs(x = "Year",
        y = "Mean Potassium Concentration") +
-  guides(color = guide_legend(title = "Sample Site"))
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))
 ```
 
 ```{r}
@@ -134,10 +133,10 @@ q1_allsites_NO3 <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(`NO3-N`))
 
-ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
+ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
   labs(x = "Year",
        y = "Mean Nitrate Concentration") +
-  guides(color = guide_legend(title = "Sample Site"))
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site")) 
 ```
 
 
