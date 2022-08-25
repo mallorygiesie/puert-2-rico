@@ -53,7 +53,7 @@ combined_data_mean <- combined_data |>
   mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
   mutate(Month_Year = my(Month_Year)) |> 
   group_by(Month_Year, Sample_ID) |> 
-  summarize(Monthly_Mean = mean(`NO3-N`))
+  summarize(Monthly_Mean = mean(`NO3-N`, na.rm = TRUE))
   
 ```
 
