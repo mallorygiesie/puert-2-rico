@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```
 
 ```{r}
@@ -17,6 +17,7 @@ library(patchwork)
 library(ggpubr)
 library(paletteer)
 library(ggExtra)
+library(here)
 
 ```
 
@@ -221,6 +222,8 @@ title_88_94 <- expression(atop(bold("Mean Monthly Nitrate and Potassium Concentr
 annotated_figure_88_94 <- annotate_figure(combined_plot_88_94 ,
                 top=text_grob(title_88_94))
 annotated_figure_88_94
+
+ggsave("combined_88_94_plots.png", path = here('figs'))
 ```
 
 ```{r}
@@ -247,5 +250,7 @@ title_14_18 <- expression(atop(bold("Mean Monthly Nitrate and Potassium Concentr
 annotated_figure_14_18 <- annotate_figure(combined_plot_14_18,
                 top=text_grob(title_14_18))
 annotated_figure_14_18
+
+ggsave("combined_14_18_plots.png", path = here("figs"))
 ```
 
