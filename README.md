@@ -1,6 +1,8 @@
 
 <h1 align="center"> Team: Puert-2-Rico </h1>
 
+
+
 <img align="right" src="puert-2-rico_sticker.png" width="300">
 
 ### Project: Comparing chemical concentrations in the watersheds of multiple lakes in the Luquillo Mountains before and after hurricane disturbances.
