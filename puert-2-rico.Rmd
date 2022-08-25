@@ -29,7 +29,7 @@ prm <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "R
 
 
 ```{r}
-# Select Columns that include sample id, sample date, nitrogen, and potassium concentration. 
+
 columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns to be kept. 
 
 
@@ -37,7 +37,7 @@ columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns
 bq1_tidy <- bq1 |> 
   select(columns_vector) |> #---- subset to include only the columns (variables) we want
   mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |>   #---- add a new column with year - month combination
-  filter(Year %in% c(seq(from = 1988, to = 1994))). #---- subset only for rows in the time frame of interest
+  filter(Year %in% c(seq(from = 1988, to = 1994))) #---- subset only for rows in the time frame of interest
 
 bq2_tidy <- bq2 |>   #---- complete the exact same steps for the following three data sets 
   select(columns_vector) |>      
@@ -78,7 +78,7 @@ plot_1989_1994_N <- ggplot(data = combined_data_mean, aes(x = Month_Year,
                                                    y = Monthly_Mean_N)) +
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
-       y = ("Mean NO3-N")) +
+       y = "Mean Nitrate") +
   guides(color = guide_legend(title = "Sample Site"))
 
 plot_1989_1994_N
@@ -91,7 +91,7 @@ plot_1989_1994_K <- ggplot(data = combined_data_mean, aes(x = Month_Year,
                                                    y = Monthly_Mean_K)) +
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean K") +
+       y = "Mean Potassium") +
   guides(color = guide_legend(title = "Sample Site"))
 
 
