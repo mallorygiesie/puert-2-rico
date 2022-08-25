@@ -1,6 +1,7 @@
 # Team: Puert-2-Rico
 
 ### Project: Comparing chemical concentrations in the watersheds of multiple lakes in the Luquillo Mountains before and after hurricane disturbances.
+![puert-2-rico](puert-2-rico_sticker.png)
 Goals: Recreate the hurricane plot to display the stream chemistry of nitrate and potassium from 1989 to 1994. Also to compare, create a plot that displays the nitrate and potassium concentrations between 2014 to 2018 in order to focus on Hurricane Maria. 
 
 ### Instructions for use
