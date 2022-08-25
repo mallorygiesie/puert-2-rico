@@ -34,7 +34,7 @@ columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns
 bq1_tidy <- bq1 |> 
   select(columns_vector) |> #---- subset to include only the columns (variables) we want
   mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |>   #---- add a new column with year - month combination
-  filter(Year %in% c(seq(from = 1988, to = 1994))). #---- subset only for rows in the time frame of interest
+  filter(Year %in% c(seq(from = 1988, to = 1994))) #---- subset only for rows in the time frame of interest
 
 bq2_tidy <- bq2 |>   #---- complete the exact same steps for the following three data sets 
   select(columns_vector) |>      
