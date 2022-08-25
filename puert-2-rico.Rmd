@@ -16,6 +16,7 @@ library(janitor)
 library(patchwork)
 library(ggpubr)
 library(paletteer)
+library(ggExtra)
 
 ```
 
@@ -62,39 +63,65 @@ combined_data <- bind_rows(bq1_tidy, bq2_tidy, bq3_tidy, prm_tidy)
 ```{r}
 #Create one column of month and year in date format so that nitrogen concentration can be summarized by month and year.
 
+date_column_only <- combined_data |> 
+  select(Sample_Date, Sample_ID)
+
 combined_data_mean <- combined_data |> 
   mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
   mutate(Month_Year = my(Month_Year)) |> 
   group_by(Month_Year, Sample_ID) |> 
   summarize(Monthly_Mean_N = mean(`NO3-N`, na.rm = TRUE), 
-            Monthly_Mean_K = mean(K, na.rm = TRUE))
+            Monthly_Mean_K = mean(K, na.rm = TRUE)) 
 
 ```
 
 
 ```{r}
+#Expression for nitrogen axis title
+n_axis_title <- expression('Mean NO'[3]*'-N '*mu*'g -1 L')
+
 # Plot of mean monthly nitrogen concentration from 1988 to 1994. 
-plot_1989_1994_N <- ggplot(data = combined_data_mean, aes(x = Month_Year,
-                                                   y = Monthly_Mean_N)) +
-  geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
+plot_1989_1994_N <- ggplot(data = combined_data_mean, 
+                           aes(x = Month_Year,
+                               y = Monthly_Mean_N)) +
+  geom_line(aes(linetype = Sample_ID, 
+                color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean Nitrate") +
+       y =  n_axis_title) +
   scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") +
-  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))
+  guides(color = guide_legend(title = "Sample Site"), 
+         linetype = guide_legend(title = "Sample Site")) +
+  theme_minimal() +
+  geom_vline(xintercept = ymd("1989-09-01"), 
+             linetype = "solid")
+  
 
 plot_1989_1994_N
 ```
 
 
 ```{r}
+
 # Plot of mean monthly potassium concentration from 1988 to 1994. 
-plot_1989_1994_K <- ggplot(data = combined_data_mean, aes(x = Month_Year,
-                                                   y = Monthly_Mean_K)) +
-  geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
+plot_1989_1994_K <- ggplot(data = combined_data_mean, 
+                           aes(x = Month_Year,
+                               y = Monthly_Mean_K)) +
+  geom_line(aes(linetype = Sample_ID, 
+                color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean Potassium") +
+       y = "Mean K mg -1 L") +
   scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") +
-  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))
+  guides(color = guide_legend(title = "Sample Site"), 
+         linetype = guide_legend(title = "Sample Site")) +
+  theme_minimal() +
+  geom_vline(xintercept = ymd("1989-09-01"), linetype = "solid") +
+  annotate("text", 
+           x = ymd("1991-01-01"), 
+           y = 1.8, 
+           label = "Hurrican Hugo", 
+           color = "black", 
+           size = 3) 
+ 
 
 
 plot_1989_1994_K
@@ -126,12 +153,25 @@ q2_allsites_K <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(K))
 
-ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
+plot_2014_2018_K <- ggplot(q2_allsites_K, 
+                           aes(x = Month_Year, 
+                               y = mean)) + 
+  geom_line(aes(linetype = Sample_ID,
+                color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
   labs(x = "Year",
-       y = "Mean Potassium Concentration") +
-  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site")) +
-  ggtitle("Mean Monthly Potassium Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria") + 
-     theme(plot.title = element_text(lineheight=.8, face="bold"))
+       y = "Mean K mg -1 L") +
+  guides(color = guide_legend(title = "Sample Site"), 
+         linetype = guide_legend(title = "Sample Site")) +
+  geom_vline(xintercept = ymd("2017-09-01"), linetype = "solid") +
+  annotate("text", 
+           x = ymd("2016-05-01"), 
+           y = 1.4, 
+           label = "Hurrican Maria", 
+           color = "black", 
+           size = 3) +
+  theme_minimal()
+
+plot_2014_2018_K
 ```
 
 ```{r}
@@ -140,12 +180,19 @@ q1_allsites_NO3 <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(`NO3-N`))
 
-ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
+plot_2014_2018_N <- ggplot(q1_allsites_NO3, aes(x = Month_Year, 
+                            y = mean)) + 
+  geom_line(aes(linetype = Sample_ID,
+                color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
   labs(x = "Year",
-       y = "Mean Nitrate Concentration") +
-  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))  +
-  ggtitle("Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria") + 
-     theme(plot.title = element_text(lineheight=.8, face="bold"))
+       y = n_axis_title) +
+  guides(color = guide_legend(title = "Sample Site"), 
+         linetype = guide_legend(title = "Sample Site")) + 
+  geom_vline(xintercept = ymd("2017-09-01"), linetype = "solid") +
+  theme_minimal()
+  
+
+plot_2014_2018_N
 ```
 
 
@@ -156,18 +203,49 @@ combined_plot_88_94 <- ggarrange(
           plot_1989_1994_K + 
                theme(axis.text.x = element_blank(),
                      axis.ticks.x = element_blank(),
-                     axis.title.x = element_blank() ), 
-          plot_1989_1994_N,
+                     axis.title.x = element_blank(),
+                     axis.title.y = element_text(size = 9),
+                     axis.text.y = element_text(size = 7)), 
+          plot_1989_1994_N +
+            theme(axis.title.y = element_text(size = 9),
+                  axis.text.y = element_text(size = 7)),
           nrow = 2,
           ncol = 1,
           common.legend = TRUE,
           legend = "right") 
 
-annotate_figure_88_94 <- annotate_figure(combined_plot_88_94, top = "Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria",
-      fig.lab.pos = "top") +
-  theme(plot.title = element_text(hjust = 0.5))
+#annotate_figure_88_94 <- annotate_figure(combined_plot_88_94, top = "Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest", top = "Before and After Hurricane Maria") 
 
+title_88_94 <- expression(atop(bold("Mean Monthly Nitrate and Potassium Concentrations"), scriptstyle("in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Hugo")))
 
-annotate_figure_88_94
+annotated_figure_88_94 <- annotate_figure(combined_plot_88_94 ,
+                top=text_grob(title_88_94))
+annotated_figure_88_94
+```
+
+```{r}
+#Combined plots for 2014 to 2018
+combined_plot_14_18 <- ggarrange( 
+          plot_2014_2018_K + 
+               theme(axis.text.x = element_blank(),
+                     axis.ticks.x = element_blank(),
+                     axis.title.x = element_blank(),
+                     axis.title.y = element_text(size = 9),
+                     axis.text.y = element_text(size = 7)),
+          plot_2014_2018_N +
+            theme(axis.title.y = element_text(size = 9),
+                  axis.text.y = element_text(size = 7)), 
+          nrow = 2,
+          ncol = 1,
+          common.legend = TRUE,
+          legend = "right")
+
+#annotate_figure_88_94 <- annotate_figure(combined_plot_88_94, top = "Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest", top = "Before and After Hurricane Maria") 
+
+title_14_18 <- expression(atop(bold("Mean Monthly Nitrate and Potassium Concentrations"), scriptstyle("in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria")))
+
+annotated_figure_14_18 <- annotate_figure(combined_plot_14_18,
+                top=text_grob(title_14_18))
+annotated_figure_14_18
 ```
 
