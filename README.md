@@ -8,14 +8,14 @@
 ### Project: Comparing chemical concentrations in the watersheds of multiple lakes in the Luquillo Mountains before and after hurricane disturbances.
 Goals: Recreate the hurricane plot to display the stream chemistry of nitrate and potassium from 1989 to 1994. Also to compare, create a plot that displays the nitrate and potassium concentrations between 2014 to 2018 in order to focus on Hurricane Maria. 
 
-### Instructions for use
+### Instructions for Use
 Navigate to the data repository website in the section below. Download the csv files for the chemistry of the watershed you are interested in analyzing. Clone our code into your own repository (be sure to include necessary libraries) and make sure your watershed data is named accordingly to avoid confusion. After that, you should be able to modify our data visualization to suit your needs. Don’t forget to run the code and verify the libraries that must be uploaded. 
 
 If you plan to use a different dataset, you can read in your dataset using read_csv. Next, you can update the column names based on your dataset column titles while tidying the data. You can use our basic outline which includes selecting the columns and filtering by year or you may need to wrangle the data further depending on your dataset. After running the code and combining the datasets using bind_rows, you can group by year and sample id and summarize to find the monthly averages. Lastly, you can create your line plot using ggplot.  
 
 <img align="left" src="luquillo_logo.jpeg" width="200">
 
-### About the data 
+### About the Data 
 
 Our data came from the Long Term Ecological Research (LTER) Station at the Luquillo Experimental Forest (LEF).
 Here is a link to the data access: 
