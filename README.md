@@ -14,6 +14,7 @@ Navigate to the data repository website in the section below. Download the csv f
 If you plan to use a different dataset, you can read in your dataset using read_csv. Next, you can update the column names based on your dataset column titles while tidying the data. You can use our basic outline which includes selecting the columns and filtering by year or you may need to wrangle the data further depending on your dataset. After running the code and combining the datasets using bind_rows, you can group by year and sample id and summarize to find the monthly averages. Lastly, you can create your line plot using ggplot.  
 
 <img align="left" src="luquillo_logo.jpeg" width="300">
+
 ### About the data 
 
 Our data came from the Long Term Ecological Research (LTER) Station at the Luquillo Experimental Forest (LEF).
