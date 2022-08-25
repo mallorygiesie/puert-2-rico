@@ -124,7 +124,9 @@ q2_allsites_K <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
 ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
   labs(x = "Year",
        y = "Mean Potassium Concentration") +
-  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site")) +
+  ggtitle("Mean Monthly Potassium Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria") + 
+     theme(plot.title = element_text(lineheight=.8, face="bold"))
 ```
 
 ```{r}
@@ -136,7 +138,9 @@ q1_allsites_NO3 <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
 ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
   labs(x = "Year",
        y = "Mean Nitrate Concentration") +
-  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site")) 
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))  +
+  ggtitle("Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria") + 
+     theme(plot.title = element_text(lineheight=.8, face="bold"))
 ```
 
 
