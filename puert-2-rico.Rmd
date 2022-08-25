@@ -152,7 +152,7 @@ ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype
 
 ```{r}
 #Combined graphs 88-94
-ggarrange( 
+combined_plot_88_94 <- ggarrange( 
           plot_1989_1994_K + 
                theme(axis.text.x = element_blank(),
                      axis.ticks.x = element_blank(),
@@ -161,8 +161,13 @@ ggarrange(
           nrow = 2,
           ncol = 1,
           common.legend = TRUE,
-          legend = "right")
+          legend = "right") 
 
-  
+annotate_figure_88_94 <- annotate_figure(combined_plot_88_94, top = "Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria",
+      fig.lab.pos = "top") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+annotate_figure_88_94
 ```
 
