@@ -13,6 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lubridate)
 library(janitor)
+library(patchwork)
+library(ggpubr)
+
 ```
 
 ## Read in data files in csv format 
@@ -57,11 +60,12 @@ combined_data <- bind_rows(bq1_tidy, bq2_tidy, bq3_tidy, prm_tidy)
 
 ```{r}
 #Create one column of month and year in date format so that nitrogen concentration can be summarized by month and year.
-combined_data_mean_N <- combined_data |> 
+combined_data_mean <- combined_data |> 
   mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
   mutate(Month_Year = my(Month_Year)) |> 
   group_by(Month_Year, Sample_ID) |> 
-  summarize(Monthly_Mean = mean(`NO3-N`, na.rm = TRUE))
+  summarize(Monthly_Mean_N = mean(`NO3-N`, na.rm = TRUE), 
+            Monthly_Mean_K = mean(K, na.rm = TRUE))
 
 #Monthly mean for postassium. 
 combined_data_mean_K <- combined_data |> 
@@ -74,11 +78,11 @@ combined_data_mean_K <- combined_data |>
 
 ```{r}
 # Plot of mean monthly nitrogen concentration from 1988 to 1994. 
-plot_1989_1994_N <- ggplot(data = combined_data_mean_N, aes(x = Month_Year,
-                                                   y = Monthly_Mean)) +
+plot_1989_1994_N <- ggplot(data = combined_data_mean, aes(x = Month_Year,
+                                                   y = Monthly_Mean_N)) +
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean Nitrogen Concentration")
+       y = ("Mean NO3-N"))
 
 plot_1989_1994_N
 ```
@@ -86,14 +90,32 @@ plot_1989_1994_N
 
 ```{r}
 # Plot of mean monthly potassium concentration from 1988 to 1994. 
-plot_1989_1994_K <- ggplot(data = combined_data_mean_K, aes(x = Month_Year,
-                                                   y = Monthly_Mean)) +
+plot_1989_1994_K <- ggplot(data = combined_data_mean, aes(x = Month_Year,
+                                                   y = Monthly_Mean_K)) +
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean Potassium Concentration")
+       y = expression("Mean K"))
 
 plot_1989_1994_K
 ```
 
+```{r}
+# Combine potassium and nitrogen graphs. 
 
+combined_graph <- plot_1989_1994_N / plot_1989_1994_K
+
+combined_graph
+```
+
+```{r}
+ggarrange( 
+          plot_1989_1994_K + 
+               theme(axis.text.x = element_blank(),
+                     axis.ticks.x = element_blank(),
+                     axis.title.x = element_blank() ), 
+          plot_1989_1994_N,
+          
+          nrow = 2,
+          ncol = 1)
+```
 
