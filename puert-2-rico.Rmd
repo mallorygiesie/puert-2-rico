@@ -79,7 +79,8 @@ plot_1989_1994_N <- ggplot(data = combined_data_mean, aes(x = Month_Year,
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
        y = "Mean Nitrate") +
-  guides(color = guide_legend(title = "Sample Site"))
+  scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") +
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))
 
 plot_1989_1994_N
 ```
@@ -92,7 +93,8 @@ plot_1989_1994_K <- ggplot(data = combined_data_mean, aes(x = Month_Year,
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
        y = "Mean Potassium") +
-  guides(color = guide_legend(title = "Sample Site"))
+  scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") +
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))
 
 
 plot_1989_1994_K
@@ -147,6 +149,7 @@ ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype
 ```
 
 
+
 ```{r}
 #Combined graphs 88-94
 ggarrange( 
@@ -155,8 +158,11 @@ ggarrange(
                      axis.ticks.x = element_blank(),
                      axis.title.x = element_blank() ), 
           plot_1989_1994_N,
-          
           nrow = 2,
-          ncol = 1)
+          ncol = 1,
+          common.legend = TRUE,
+          legend = "right")
+
+  
 ```
 
