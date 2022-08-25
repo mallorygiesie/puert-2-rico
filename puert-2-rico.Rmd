@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lubridate)
 library(janitor)
+library(paletteer)
 ```
 
 ## Read in data files in csv format 
@@ -31,11 +32,11 @@ columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns
 
 #select columns form columns vector, create columns for month and year adn filter to rows that contain years 1988 to 1994. 
 bq1_tidy <- bq1 |> 
-  select(columns_vector) |>           #creating a subset of only columns that we are interested in (from vector above)
-  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |>  #adding month and year columns (lubridate)
-  filter(Year %in% c(seq(from = 1988, to = 1994)))        #subsetting for only rows in the time frame of interest
+  select(columns_vector) |> 
+  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
+  filter(Year %in% c(seq(from = 1988, to = 1994)))
 
-bq2_tidy <- bq2 |>                        #repeating this sequence for the other three watershed dataframes
+bq2_tidy <- bq2 |> 
   select(columns_vector) |> 
   mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
   filter(Year %in% c(seq(from = 1988, to = 1994)))
@@ -51,20 +52,20 @@ prm_tidy <- prm |>
   filter(Year %in% c(seq(from = 1988, to = 1994)))
 
 #Combine four data sets into one data frame. 
-combined_data <- bind_rows(bq1_tidy, bq2_tidy, bq3_tidy, prm_tidy)   #binding the rows together to make a combined data                                                                        frame using bind_rows()
+combined_data <- bind_rows(bq1_tidy, bq2_tidy, bq3_tidy, prm_tidy)
 
 ```
 
 ```{r}
 #Create one column of month and year in date format so that nitrogen concentration can be summarized by month and year.
-combined_data_mean_N <- combined_data |>   #creating a new column with unique year-month combinations
-  mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |>  #pasting year and month together (class:character)
-  mutate(Month_Year = my(Month_Year)) |>   #using lubridate again to go back to date format in new column
-  group_by(Month_Year, Sample_ID) |>       #group_by() into summarize() to get monthlly averages (to graph later)
-  summarize(Monthly_Mean = mean(`NO3-N`, na.rm = TRUE))   #avoiding gaps by removing NA values 
+combined_data_mean_N <- combined_data |> 
+  mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
+  mutate(Month_Year = my(Month_Year)) |> 
+  group_by(Month_Year, Sample_ID) |> 
+  summarize(Monthly_Mean = mean(`NO3-N`, na.rm = TRUE))
 
-#Monthly mean for postassium. (same workflow as above)
-combined_data_mean_K <- combined_data |>    
+#Monthly mean for postassium. 
+combined_data_mean_K <- combined_data |> 
   mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
   mutate(Month_Year = my(Month_Year)) |> 
   group_by(Month_Year, Sample_ID) |> 
@@ -78,7 +79,8 @@ plot_1989_1994_N <- ggplot(data = combined_data_mean_N, aes(x = Month_Year,
                                                    y = Monthly_Mean)) +
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean Nitrogen Concentration")
+       y = "Mean Nitrogen Concentration") +
+  guides(color = guide_legend(title = "Sample Site"))
 
 plot_1989_1994_N
 ```
@@ -90,7 +92,8 @@ plot_1989_1994_K <- ggplot(data = combined_data_mean_K, aes(x = Month_Year,
                                                    y = Monthly_Mean)) +
   geom_line(aes(linetype = Sample_ID, color = Sample_ID)) +
   labs(x = "Year",
-       y = "Mean Potassium Concentration")
+       y = "Mean Potassium Concentration") +
+  guides(color = guide_legend(title = "Sample Site"))
 
 plot_1989_1994_K
 ```
@@ -119,7 +122,10 @@ q2_allsites_K <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(K))
 
-ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID))
+ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
+  labs(x = "Year",
+       y = "Mean Potassium Concentration") +
+  guides(color = guide_legend(title = "Sample Site"))
 ```
 
 ```{r}
@@ -128,7 +134,10 @@ q1_allsites_NO3 <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(`NO3-N`))
 
-ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID))
+ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
+  labs(x = "Year",
+       y = "Mean Nitrate Concentration") +
+  guides(color = guide_legend(title = "Sample Site"))
 ```
 
 
