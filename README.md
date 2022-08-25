@@ -29,9 +29,9 @@ The raw data is housed under a shared folder in the server “Taylor”. Access 
 
 
 ### Libraries Used 
-Tidyverse
-Janitor
-Lubridate
+Tidyverse,
+Janitor,
+Lubridate,
 Paletteer
 
 
