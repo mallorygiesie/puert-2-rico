@@ -13,13 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(lubridate)
 library(janitor)
-<<<<<<< HEAD
 library(patchwork)
 library(ggpubr)
-
-=======
 library(paletteer)
->>>>>>> 9b17dd8fdf60f9fd187615f6f6c0ef4f4a5b7155
+
 ```
 
 ## Read in data files in csv format 
@@ -84,7 +81,6 @@ plot_1989_1994_N <- ggplot(data = combined_data_mean, aes(x = Month_Year,
        y = ("Mean NO3-N")) +
   guides(color = guide_legend(title = "Sample Site"))
 
-
 plot_1989_1994_N
 ```
 
@@ -104,7 +100,6 @@ plot_1989_1994_K
 
 ```{r}
 
-# Combine potassium and nitrogen graphs. 
 
 bq1_clean <- bq1 %>% select(Sample_ID, Sample_Date, K, `NO3-N`) %>% 
   mutate(Year = lubridate::year(Sample_Date)) %>% 
@@ -129,10 +124,12 @@ q2_allsites_K <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(K))
 
-ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
+ggplot(q2_allsites_K, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
   labs(x = "Year",
        y = "Mean Potassium Concentration") +
-  guides(color = guide_legend(title = "Sample Site"))
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site")) +
+  ggtitle("Mean Monthly Potassium Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria") + 
+     theme(plot.title = element_text(lineheight=.8, face="bold"))
 ```
 
 ```{r}
@@ -141,17 +138,17 @@ q1_allsites_NO3 <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>%
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
   group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(`NO3-N`))
 
-ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
+ggplot(q1_allsites_NO3, aes(x = Month_Year , y = mean)) + geom_line(aes(linetype = Sample_ID,color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
   labs(x = "Year",
        y = "Mean Nitrate Concentration") +
-  guides(color = guide_legend(title = "Sample Site"))
+  guides(color = guide_legend(title = "Sample Site"), linetype = guide_legend(title = "Sample Site"))  +
+  ggtitle("Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest Before and After Hurricane Maria") + 
+     theme(plot.title = element_text(lineheight=.8, face="bold"))
 ```
 
-
-combined_graph
-```
 
 ```{r}
+#Combined graphs 88-94
 ggarrange( 
           plot_1989_1994_K + 
                theme(axis.text.x = element_blank(),
