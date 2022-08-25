@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(lubridate)
+library(janitor)
 ```
 
 
@@ -22,6 +24,45 @@ prm <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "R
 ```
 
 ```{r}
+# Select Columns 
+columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K")
 
+bq1_tidy <- bq1 |> 
+  select(columns_vector) |> 
+  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
+  filter(Year %in% c(seq(from = 1988, to = 1994)))
+
+bq2_tidy <- bq2 |> 
+  select(columns_vector) |> 
+  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
+  filter(Year %in% c(seq(from = 1988, to = 1994)))
+
+bq3_tidy <- bq3 |> 
+  select(columns_vector) |> 
+  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
+  filter(Year %in% c(seq(from = 1988, to = 1994)))
+
+prm_tidy <- prm |> 
+  select(columns_vector) |> 
+  mutate(Year = year(Sample_Date), Month = month(Sample_Date)) |> 
+  filter(Year %in% c(seq(from = 1988, to = 1994)))
+
+combined_data <- bind_rows(bq1_tidy, bq2_tidy, bq3_tidy, prm_tidy)
+
+combined_data_mean <- combined_data |> 
+  mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
+  mutate(Month_Year = my(Month_Year)) |> 
+  group_by(Month_Year, Sample_ID) |> 
+  summarize(Monthly_Mean = mean(`NO3-N`))
+  
 ```
+
+```{r}
+plot_1989_1994 <- ggplot(data = combined_data_mean, aes(x = Month_Year,
+                                                   y = Monthly_Mean)) +
+  geom_line(aes(linetype = Sample_ID, color = Sample_ID)) 
+
+plot_1989_1994
+```
+
 
