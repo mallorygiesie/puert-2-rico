@@ -1,4 +1,5 @@
-# Team: Puert-2-Rico
+
+<h1 align="center"> Team: Puert-2-Rico </h1>
 
 <img align="right" src="puert-2-rico_sticker.png" width="300">
 
