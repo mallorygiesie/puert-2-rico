@@ -6,17 +6,17 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE)
 ```
 
 ```{r}
+# Loading packages
 library(tidyverse)
 library(lubridate)
-library(janitor)
-library(patchwork)
 library(ggpubr)
 library(paletteer)
-library(ggExtra)
 library(here)
 
 ```
@@ -32,7 +32,7 @@ prm <- read_csv(file.path("","courses", "EDS214", "puert-2-rico", "raw_data", "R
 
 ```{r}
 
-columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns to be kept. 
+columns_vector <- c("Sample_ID", "Sample_Date", "NO3-N", "K") #vector of columns to be kept from data frames. 
 
 
 #select columns form columns vector, create columns for month and year and filter to rows that contain years 1988 to 1994. 
@@ -64,12 +64,10 @@ combined_data <- bind_rows(bq1_tidy, bq2_tidy, bq3_tidy, prm_tidy)
 ```{r}
 #Create one column of month and year in date format so that nitrogen concentration can be summarized by month and year.
 
-date_column_only <- combined_data |> 
-  select(Sample_Date, Sample_ID)
-
 combined_data_mean <- combined_data |> 
-  mutate(Month_Year = paste(month(Sample_Date), year(Sample_Date))) |> 
-  mutate(Month_Year = my(Month_Year)) |> 
+  mutate(Month_Year = paste(month(Sample_Date), # create column with month and year as character
+                            year(Sample_Date))) |> 
+  mutate(Month_Year = my(Month_Year)) |> # converts month year column to data format
   group_by(Month_Year, Sample_ID) |> 
   summarize(Monthly_Mean_N = mean(`NO3-N`, na.rm = TRUE), 
             Monthly_Mean_K = mean(K, na.rm = TRUE)) 
@@ -93,10 +91,9 @@ plot_1989_1994_N <- ggplot(data = combined_data_mean,
   guides(color = guide_legend(title = "Sample Site"), 
          linetype = guide_legend(title = "Sample Site")) +
   theme_minimal() +
-  geom_vline(xintercept = ymd("1989-09-01"), 
+  geom_vline(xintercept = ymd("1989-09-01"), # add vertical line for month of hurricane 
              linetype = "solid")
   
-
 plot_1989_1994_N
 ```
 
@@ -122,14 +119,12 @@ plot_1989_1994_K <- ggplot(data = combined_data_mean,
            label = "Hurrican Hugo", 
            color = "black", 
            size = 3) 
- 
-
 
 plot_1989_1994_K
 ```
 
 ```{r}
-
+#Data wrangling for 2014 to 2018 data. 
 
 bq1_clean <- bq1 %>% select(Sample_ID, Sample_Date, K, `NO3-N`) %>% 
   mutate(Year = lubridate::year(Sample_Date)) %>% 
@@ -149,11 +144,16 @@ prm_clean <- prm %>% select(Sample_ID, Sample_Date, K, `NO3-N`) %>%
 ```
 
 ```{r}
+#arrange data and add day month column for grouping. 
 q2_allsites_K <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>% 
-  mutate(Month_Year = paste(lubridate::month(Sample_Date),lubridate::year(Sample_Date))) %>% 
+  mutate(Month_Year = paste(lubridate::month(Sample_Date),
+                            lubridate::year(Sample_Date))) %>% 
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
-  group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(K))
+  group_by(Month_Year, 
+           Sample_ID) %>% 
+  summarise(mean = mean(K))
 
+#ggplot for 2014 to 2018 potassium
 plot_2014_2018_K <- ggplot(q2_allsites_K, 
                            aes(x = Month_Year, 
                                y = mean)) + 
@@ -176,20 +176,28 @@ plot_2014_2018_K
 ```
 
 ```{r}
+# arrange data and add month year column for grouping. 
 q1_allsites_NO3 <- bind_rows(bq1_clean, bq2_clean, bq3_clean, prm_clean) %>% 
-  mutate(Month_Year = paste(lubridate::month(Sample_Date),lubridate::year(Sample_Date))) %>% 
+  mutate(Month_Year = paste(lubridate::month(Sample_Date),
+                            lubridate::year(Sample_Date))) %>% 
   mutate(Month_Year = lubridate:: my(Month_Year)) %>% 
-  group_by(Month_Year, Sample_ID) %>% summarise(mean = mean(`NO3-N`))
+  group_by(Month_Year, 
+           Sample_ID) %>% 
+  summarise(mean = mean(`NO3-N`))
 
-plot_2014_2018_N <- ggplot(q1_allsites_NO3, aes(x = Month_Year, 
-                            y = mean)) + 
+# ggplot 2014 to 2018 nitrate. 
+plot_2014_2018_N <- ggplot(q1_allsites_NO3, 
+                           aes(x = Month_Year, 
+                               y = mean)) + 
   geom_line(aes(linetype = Sample_ID,
-                color = Sample_ID)) + scale_color_paletteer_d("fishualize::Koumansetta_rainfordi")  + 
+                color = Sample_ID)) + 
+  scale_color_paletteer_d("fishualize::Koumansetta_rainfordi") + 
   labs(x = "Year",
        y = n_axis_title) +
   guides(color = guide_legend(title = "Sample Site"), 
          linetype = guide_legend(title = "Sample Site")) + 
-  geom_vline(xintercept = ymd("2017-09-01"), linetype = "solid") +
+  geom_vline(xintercept = ymd("2017-09-01"), 
+             linetype = "solid") +
   theme_minimal()
   
 
@@ -199,7 +207,7 @@ plot_2014_2018_N
 
 
 ```{r}
-#Combined graphs 88-94
+#Combined graphs 88-94. Element blank prevents two x axis from showing up on the combined graph. 
 combined_plot_88_94 <- ggarrange( 
           plot_1989_1994_K + 
                theme(axis.text.x = element_blank(),
@@ -210,10 +218,10 @@ combined_plot_88_94 <- ggarrange(
           plot_1989_1994_N +
             theme(axis.title.y = element_text(size = 9),
                   axis.text.y = element_text(size = 7)),
-          nrow = 2,
+          nrow = 2, # stacks the graphs on top of each other. 
           ncol = 1,
-          common.legend = TRUE,
-          legend = "right") 
+          common.legend = TRUE, # uses one legend for both graphs.
+          legend = "right") # sets legend position. 
 
 #annotate_figure_88_94 <- annotate_figure(combined_plot_88_94, top = "Mean Monthly Nitrate Levels in Watersheds in the Luquillo Experimental Forest", top = "Before and After Hurricane Maria") 
 
@@ -223,11 +231,11 @@ annotated_figure_88_94 <- annotate_figure(combined_plot_88_94 ,
                 top=text_grob(title_88_94))
 annotated_figure_88_94
 
-ggsave("combined_88_94_plots.png", path = here('figs'))
+ggsave("combined_88_94_plots.png", path = here('figs'), width = 8, height = 5)
 ```
 
 ```{r}
-#Combined plots for 2014 to 2018
+#Combined plots for 2014 to 2018. Element blank for x axis removes duplicate x axis in the combined plot. 
 combined_plot_14_18 <- ggarrange( 
           plot_2014_2018_K + 
                theme(axis.text.x = element_blank(),
@@ -251,6 +259,6 @@ annotated_figure_14_18 <- annotate_figure(combined_plot_14_18,
                 top=text_grob(title_14_18))
 annotated_figure_14_18
 
-ggsave("combined_14_18_plots.png", path = here("figs"))
+ggsave("combined_14_18_plots.png", path = here("figs"), width = 8, height = 5)
 ```
 
